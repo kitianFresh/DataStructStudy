@@ -35,6 +35,8 @@ int DelList(LinkedList L, unsigned int i, ElemType *e);
 /*合并两个有序递增链表，不使用额外空间，将LA和LB合并到LC上,返回LC的地址,保证LC也有序递增，LC采用尾插法*/
 LinkedList MergeList(LinkedList LA, LinkedList LB);
 
+/*单链表的就地逆置，思想是采用头插法重新再插入一遍，只是此时不用再申请空间*/void ReverseList(LinkedList L);
+
 /*打印链表元素*/
 void PrintList(LinkedList L);
 
@@ -84,7 +86,22 @@ int main(){
 	PrintList(LB);
 	LC = MergeList(LA,LB);
 	PrintList(LC);
+	ReverseList(L);
+	PrintList(L);
 	return 0;
+}
+
+void ReverseList(LinkedList L){
+	Node *p,*q;
+	p = L->next;//记录第一个节点的位置
+	L->next = NULL;//链表头next置空
+	while(p!=NULL){
+		q = p->next;//记录p的后继节点位置
+		//头插法插入
+		p->next = L->next;
+		L->next = p;
+		p = q;//退移到下一个节点
+	}
 }
 
 void PrintList(LinkedList L){
