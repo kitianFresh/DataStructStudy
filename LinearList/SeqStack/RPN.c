@@ -60,12 +60,10 @@ int main(){
 //压入运算数栈OVS同时将运算数保存到rpn中，每次求值时，将符号栈OPTR弹出的符
 //号保存到rpn中
 void reversePolishNotation(char *exp, char *rpn){
-	SeqStack OPTR,OVS;
-	char ch,l,r,temp;
-	temp = 'A';
+	SeqStack OPTR;
+	char ch;
 	int i=0;
 	InitStack(&OPTR);
-	InitStack(&OVS);
 	Push(&OPTR, '#');
 	GetTop(&OPTR,&ch);
 	while(*exp!='#' || ch != '#'){
@@ -73,10 +71,7 @@ void reversePolishNotation(char *exp, char *rpn){
 			switch(ComparePrior(*exp,ch)){
 				case '<':
 				case '=':
-					Pop(&OVS,&r);
-					Pop(&OVS,&l);
 					Pop(&OPTR,&ch);
-					Push(&OVS,temp);//为保证正常出栈假象的计算，实际并无意义
 					rpn[i++] = ch;//将该运算符存入rpn中；
 					break;
 				case '>':
@@ -86,7 +81,6 @@ void reversePolishNotation(char *exp, char *rpn){
 			}
 		}
 		else {
-			Push(&OVS,*exp);
 			rpn[i++] = *exp;//将该运算数存入rpn；
 			exp ++;
 		}
