@@ -30,6 +30,8 @@ int IsOptr(char ch){
 		case '*':
 		case '/':
 		case '^':
+		case '(':
+		case ')':
 			return 1;
 		default:
 			return 0;
@@ -68,16 +70,31 @@ void reversePolishNotation(char *exp, char *rpn){
 	GetTop(&OPTR,&ch);
 	while(*exp!='#' || ch != '#'){
 		if(IsOptr(*exp)){
-			switch(ComparePrior(*exp,ch)){
-				case '<':
-				case '=':
+			if(*exp == '('){
+				Push(&OPTR,*exp);
+				exp ++;
+			}
+			else if(*exp == ')'){
+				Pop(&OPTR,&ch);
+				//不断出栈直到匹配到'('
+				while(ch != '('){
+					rpn[i++] = ch;
 					Pop(&OPTR,&ch);
-					rpn[i++] = ch;//将该运算符存入rpn中；
-					break;
-				case '>':
-					Push(&OPTR,*exp);
-					exp ++;
-					break;
+				}
+				exp ++;
+			}
+			else {
+				switch(ComparePrior(*exp,ch)){
+					case '<':
+					case '=':
+						Pop(&OPTR,&ch);
+						rpn[i++] = ch;//将该运算符存入rpn中；
+						break;
+					case '>':
+						Push(&OPTR,*exp);
+						exp ++;
+						break;
+				}
 			}
 		}
 		else {
