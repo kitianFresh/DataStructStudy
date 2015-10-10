@@ -10,7 +10,7 @@ int main(){
 			EnterQueue(&Q,e);
 	}
 	PrintQueue(&Q);
-	while(!IsEmpty(&Q)){
+	while(!QueueIsEmpty(&Q)){
 		DeleteQueue(&Q,&e);
 		printf("%d\t", e);
 	}

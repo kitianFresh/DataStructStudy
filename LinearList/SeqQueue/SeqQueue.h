@@ -13,7 +13,7 @@ typedef struct {
 void InitQueue(SeqQueue *Q);
 int EnterQueue(SeqQueue *Q, QueueElementType x);
 int DeleteQueue(SeqQueue *Q, QueueElementType *x);
-int IsFull(SeqQueue *Q);
-int IsEmpty(SeqQueue *Q);
+int QueueIsFull(SeqQueue *Q);
+int QueueIsEmpty(SeqQueue *Q);
 void PrintQueue(SeqQueue *Q);
 #endif
