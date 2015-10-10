@@ -4,15 +4,13 @@
 #include "SeqStack.h"
 #include "../SeqQueue/SeqQueue.h"
 
-
-
 /*递归的方法统计n个元素依次入栈之后的出栈顺序总的类数之和*/
 int PopStackOrderSum(int n);
 /*非递归方法统计n个元素一次入栈之后的出栈顺序总的类别数之和*/
 int PopStackOrderSum1(int n);
 
 /*递归的方法，输出所有可能的出栈顺序*/
-void PopStackOrder(StackElementType *src, SeqStack *S, StackElementType *dest, int index, int size);
+void PopStackOrder(StackElementType *src, SeqStack *S, SeqQueue *dest, int index, int size);
 
 int PopStackOrderSum(int n){
 	int i;
@@ -47,42 +45,29 @@ int main(){
 	printf("Non-recursive : sum = %d\n", PopStackOrderSum1(n));
 
 	SeqStack S;
-	StackElementType dest[4]={0,0,0,0};
-	StackElementType src[3] = {1,2,3};
-	PopStackOrder(src,&S,dest,0,sizeof(src)/sizeof(StackElementType));
+	SeqQueue dest;
+	StackElementType src[4] = {1,2,3,4};
+	PopStackOrder(src,&S,&dest,0,sizeof(src)/sizeof(StackElementType));
 	return 0;
 }
 
-void PopStackOrder(StackElementType *src, SeqStack *S, StackElementType *dest, int index, int size){
+void PopStackOrder(StackElementType *src, SeqStack *S, SeqQueue *dest, int index, int size){
 	static int count = 0;
-	SeqStack temp;
 	QueueElementType e;
-	int i;
 	if(index >= size){
 		printf("%d:",++count);
-		
-		/*打印dest*/
-		for(i=1;i<=dest[0];i++){
-			printf("\t%d",dest[i]);
+		while(!StackIsEmpty(S)){
+			Pop(S,&e);
+			EnterQueue(dest,e);
 		}
-
-		/*打印栈中元素*/
-		for(i=0;i<=S->top;i++){
-			printf("\t%d",S->elem[S->top-i]);
-		}
-		printf("\n");
+		PrintQueue(dest);
 		return ;
 	}
 	Push(S,src[index]);
 	PopStackOrder(src,S,dest,index+1,size);/*遍历左子树*/
-	Pop(S,&e);/*恢复现场，让栈中的栈顶元素弹出，返回到上一步*/
 	if(!StackIsEmpty(S)){
 		Pop(S,&e);
-		dest[++dest[0]] = e;
+		Enter(dest,e);
 		PopStackOrder(src,S,dest,index,size);
-		//恢复现场，让队列中的最后一个元素再弹回到栈中
-		e = dest[dest[0]];
-		Push(S,e);
-		dest[0]--;
 	}
 }

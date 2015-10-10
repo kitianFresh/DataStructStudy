@@ -24,5 +24,6 @@ int StackIsEmpty(SeqStack *S);
 
 int StackIsFull(SeqStack *S);
 
+int CopyStackToStack(SeqStack *S, SeqStack *T);
 #endif
 

@@ -25,7 +25,7 @@ int BracketMatch(char *str){
 			case ')':
 			case ']':
 			case '}':
-				if(IsEmpty(&S)) return ERROR;
+				if(StackIsEmpty(&S)) return ERROR;
 				else {
 					Pop(&S,&ch);
 					printf("%c出栈\n",ch);
@@ -37,7 +37,7 @@ int BracketMatch(char *str){
 		}
 		str ++;
 	}
-	if(IsEmpty(&S)) return OK;
+	if(StackIsEmpty(&S)) return OK;
 	else return ERROR;
 }
 

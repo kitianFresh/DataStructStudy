@@ -41,3 +41,7 @@ int GetTop(SeqStack *S, StackElementType *x){
 	*x = S->elem[S->top];
 	return OK;
 }
+
+int CopyStackToStack(SeqStack *S, SeqStack *T){
+		
+}
