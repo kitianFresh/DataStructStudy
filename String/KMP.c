@@ -39,27 +39,20 @@ int KMP_algorithm(char *src, char *sub, int *index){
 	for(i=0;i<len;i++){
 		printf("%d\n",next[i]);
 	}
-	i = j = k = 0;
-	while('\0' != src[i]){
-		
-		if(src[i] == sub[j]) {
-			i ++;
-			j ++;
-			if(j == len) {
-				j = next[j-1]+1;
-				index[k++] = i - len;
-				printf("index:%d\n",index[k-1]);
-			}
-			continue;
-		}
-		else {
+	i = k = 0;
+	j = -1;
+	for(;'\0' != src[i];i++){
+		/*不等则回溯*/
+		while(src[i] != sub[j+1] && j>=0){
 			j = next[j];
-			if(j == -1) {
-				j = 0;
-				i ++;
-			}
 		}
-		
+		/*相等则继续匹配*/
+		if(src[i] == sub[j+1]) j++;
+		if(j == len-1) {
+			j = next[j];
+			index[k++] = i - len + 1;
+			printf("index:%d\n",index[k-1]);
+		}
 	}
 	if(k == 0) return 0;
 	else return 1;
