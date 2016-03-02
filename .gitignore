@@ -1,3 +1,5 @@
+# bak files
+*.*~
 # Object files
 *.o
 *.ko
@@ -20,13 +22,15 @@
 *.so.*
 *.dylib
 
-# Executables
+# Executables (include linux )
 *.exe
 *.out
 *.app
 *.i*86
 *.x86_64
 *.hex
+main
+q
 
 # Debug files
 *.dSYM/
