@@ -20,9 +20,8 @@ int Pop(SeqStack *S, StackElementType *x);
 
 int GetTop(SeqStack *S, StackElementType *x);
 
-int StackIsEmpty(SeqStack *S);
+int IsEmpty(SeqStack *S);
 
-int StackIsFull(SeqStack *S);
-
+int IsFull(SeqStack *S);
 #endif
 
