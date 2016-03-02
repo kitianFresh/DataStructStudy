@@ -7,6 +7,7 @@ void BinSort(int a[], int n);
 
 void ShellInsert(int a[], int n, int d);
 void ShellSort(int a[], int n, int d[], int t);
+void ShellInsert1(int a[], int n, int d);
 
 int main(){
 	int a[10];
@@ -81,8 +82,26 @@ void ShellInsert(int a[], int n, int d){
 	}
 }
 
+/* Another version of shellinsert, don't need trip 
+ * because it will acess all elem in every subsequence
+ * when it iterates the array in order
+ * */
+void ShellInsert1(int a[], int n, int d){
+	int i, j, temp;
+	for (i = d; i < n; i++) {
+		if (a[i] < a[i-d]) { /* Check the order to avoid redundant compare*/
+			temp = a[i]; /* Save the elem to insert */
+			/* Find the position to insert */
+			for (j = i - d; j >= 0 && a[j] > temp; j -= d)
+				a[j+d] = a[j];
+			a[j+d] = temp; /* Insert the elem */
+		}
+	}
+}
+
 void ShellSort(int a[], int n, int d[], int t){
 	int i = 0;
 	for (;i < t; i ++)
-		ShellInsert(a,n,d[i]);
+		//ShellInsert(a, n, d[i]);
+		ShellInsert1(a, n, d[i]);
 }
