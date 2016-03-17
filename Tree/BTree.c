@@ -15,7 +15,12 @@ void inorder(BTNode *bt);
 void postorder(BTNode *bt);
 void level(BTNode *p);
 
-
+/* Application */
+typedef struct {
+	BTNode *p; /* Node pointer */
+	int layno; /* layer number */
+} ST;
+int maxNode(BTNode *bt);
 
 int main() {
 	BTNode *bt;
@@ -24,6 +29,7 @@ int main() {
 	initBT(&bt, n);
 	inorder(bt);
 	level(bt);
+	printf("maxNode: %d\n", maxNode(bt));
 	return 0;
 }
 
@@ -104,4 +110,47 @@ void level(BTNode *p) {
 			}
 		}
 	}
+}
+
+int maxNode(BTNode *p) {
+	int front, rear, lno;
+   	int max, i, j, n;
+	ST queue[QUE_SIZE];
+	BTNode *q;
+	front = rear = 0;
+	if (NULL != p) {
+		rear++;
+		queue[rear].p = p;
+		queue[rear].layno = 1;
+		
+		while (front != rear) {
+			front++;
+			q = queue[front].p;
+			lno = queue[front].layno;
+			visit(q);
+			if (NULL != q->left) {
+				rear ++;
+				queue[rear].p = q->left;
+				queue[rear].layno = lno + 1;
+			}
+			if (NULL != q->right) {
+				rear ++;
+				queue[rear].p = q->right;
+				queue[rear].layno = lno + 1;
+			}
+		}
+		max = 0;
+		for (i = 1; i <= lno; i ++) {
+			n = 0;
+			for (j = 1; j <= rear; j ++) {
+				if (queue[j].layno == i)
+					++n;
+			}
+			if (max < n)
+				max = n;
+		}
+		return max;
+	}
+	else 
+		return 0;
 }
