@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define QUE_SIZE 100
+#define MAX_NODES 100
 typedef struct BTNode {
 	int key;
 	struct BTNode *left;
@@ -24,17 +25,61 @@ typedef struct {
 } ST;
 int maxNode(BTNode *bt);
 
+static int pre[MAX_NODES] = {0};
+static int in[MAX_NODES] = {0};
+static int post[MAX_NODES] = {0};
+static int pre_index = 0;
+static int in_index = 0;
+static int post_index = 0;
+
+BTNode *buildBT(int pre[], int in[], int l1, int r1, int l2, int r2);
+
 int main() {
-	BTNode *bt;
+	BTNode *bt, *p;
 	int n;
 	scanf("%d", &n);
 	initBT(&bt, n);
+
+	printf("************preorder***********\n");
+	preorder(bt);
+	printf("\n");
+
+	printf("************inorder************\n");
 	inorder(bt);
+	printf("\n");
+
+	printf("*************postorder*********\n");
+	postorder(bt);
+	printf("\n");
+
+	printf("*************level*************\n");
 	level(bt);
+	printf("\n");
+
 	printf("maxNode: %d\n", maxNode(bt));
 	printf("countNodes: %d\n", countNodes(bt));
 	printf("getDepth: %d\n", getDepth(bt));
+	p = buildBT(pre, in, 0, pre_index - 1, 0, in_index - 1);
+
+	printf("*********************************\n");
+	level(p);
+	printf("\n");
 	return 0;
+}
+
+BTNode *buildBT(int pre[], int in[], int l1, int r1, int l2, int r2) {
+	int i;
+	if ( l1 > r1 || l2 > r2) return NULL;
+	BTNode *p = (BTNode*)malloc(sizeof(BTNode));
+	p->key = pre[l1];
+	p->left = NULL;
+	p->right = NULL;
+	for (i = l2; i <= r2; i ++)
+		if (in[i] == pre[l1])
+			break;
+	p->left = buildBT(pre, in, l1 + 1, l1 + i - l2, l2, i - 1);
+	p->right = buildBT(pre, in, l1 + i - l2 + 1, r1, i + 1, r2);
+	return p;
 }
 
 int countNodes(BTNode *bt) {
@@ -81,12 +126,13 @@ BTNode *insertBT(BTNode **bt, int key) {
 }
 
 void visit(BTNode *bt) {
-	printf("%d\n", bt->key);
+	printf("%d ", bt->key);
 }
 
 void preorder(BTNode *bt) {
 	if (NULL != bt) {
-		printf("preorder:%d\n", bt->key);
+		visit(bt);
+		pre[pre_index++] = bt->key;
 		preorder(bt->left);
 		preorder(bt->right);
 	}
@@ -96,7 +142,8 @@ void preorder(BTNode *bt) {
 void inorder(BTNode *bt) {
 	if (NULL != bt) {
 		inorder(bt->left);
-		printf("inorder:%d\n", bt->key);
+		visit(bt);
+		in[in_index++] = bt->key;
 		inorder(bt->right);
 	}
 	return ;
@@ -106,7 +153,8 @@ void postorder(BTNode *bt) {
 	if (NULL != bt) {
 		postorder(bt->left);
 		postorder(bt->right);
-		printf("postorder:%d\n", bt->key);
+		visit(bt);
+		post[post_index++] = bt->key;
 	}
 }
 
@@ -149,7 +197,6 @@ int maxNode(BTNode *p) {
 			front++;
 			q = queue[front].p;
 			lno = queue[front].layno;
-			visit(q);
 			if (NULL != q->left) {
 				rear ++;
 				queue[rear].p = q->left;
