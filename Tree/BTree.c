@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define QUE_SIZE 100
 typedef struct BTNode {
 	int key;
 	struct BTNode *left;
@@ -8,9 +9,13 @@ typedef struct BTNode {
 
 void initBT(BTNode **bt, int n);
 BTNode *insertBT(BTNode **bt, int key);
+void visit(BTNode *bt);
 void preorder(BTNode *bt);
 void inorder(BTNode *bt);
 void postorder(BTNode *bt);
+void level(BTNode *p);
+
+
 
 int main() {
 	BTNode *bt;
@@ -18,6 +23,7 @@ int main() {
 	scanf("%d", &n);
 	initBT(&bt, n);
 	inorder(bt);
+	level(bt);
 	return 0;
 }
 
@@ -46,6 +52,10 @@ BTNode *insertBT(BTNode **bt, int key) {
 	}
 }
 
+void visit(BTNode *bt) {
+	printf("%d\n", bt->key);
+}
+
 void preorder(BTNode *bt) {
 	if (NULL != bt) {
 		printf("preorder:%d\n", bt->key);
@@ -69,5 +79,29 @@ void postorder(BTNode *bt) {
 		postorder(bt->left);
 		postorder(bt->right);
 		printf("postorder:%d\n", bt->key);
+	}
+}
+
+void level(BTNode *p) {
+	int front, rear;
+	BTNode *queue[QUE_SIZE];
+	BTNode *q;
+	front = rear = 0;
+	if (NULL != p) {
+		rear = (rear+1)%QUE_SIZE;
+		queue[rear] = p;
+		while (front != rear) {
+			front = (front+1)%QUE_SIZE;
+			q = queue[front];
+			visit(q);
+			if (NULL != q->left) {
+				rear = (rear+1)%QUE_SIZE;
+				queue[rear] = q->left;
+			}
+			if (NULL != q->right) {
+				rear = (rear+1)%QUE_SIZE;
+				queue[rear] = q->right;
+			}
+		}
 	}
 }
