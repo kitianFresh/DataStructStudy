@@ -14,6 +14,8 @@ void preorder(BTNode *bt);
 void inorder(BTNode *bt);
 void postorder(BTNode *bt);
 void level(BTNode *p);
+int countNodes(BTNode *bt);
+int getDepth(BTNode *bt);
 
 /* Application */
 typedef struct {
@@ -30,7 +32,27 @@ int main() {
 	inorder(bt);
 	level(bt);
 	printf("maxNode: %d\n", maxNode(bt));
+	printf("countNodes: %d\n", countNodes(bt));
+	printf("getDepth: %d\n", getDepth(bt));
 	return 0;
+}
+
+int countNodes(BTNode *bt) {
+	if (NULL == bt) /* An empty tree */
+		return 0;
+	else 
+		return countNodes(bt->left) + countNodes(bt->right) + 1;
+}
+
+int getDepth(BTNode *bt) {
+	int left, right;
+	if (NULL == bt) /* An empty tree */
+		return 0;
+	else {
+		left = getDepth(bt->left) + 1;
+		right = getDepth(bt->right) + 1;
+		return left > right ? left : right;
+	}
 }
 
 void initBT(BTNode **bt, int n) {
