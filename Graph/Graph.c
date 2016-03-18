@@ -10,12 +10,92 @@ void BFS(AGraph *G, int v);/* a bug version */
 void BFS1(AGraph *G, int v);
 void buildGraph(AGraph *G);
 
+/* Application */
+int remoteVex(AGraph *G, int v);
+void DFS2(AGraph *G, int v, int *vn, int *en);
+int GisTree(AGraph *G);
+int PathExisted(AGraph *G, int vi, int vj);
+
+
 int main(){
 	AGraph G;
 	buildGraph(&G);
 	//DFS(&G, 0);
 	BFS1(&G, 0);
+	printf("%d\n", remoteVex(&G, 0));
+	printf("GisTree: %d\n", GisTree(&G));
+	printf("PathExisted between %d and %d: %d\n", 0, 4, 
+			PathExisted(&G, 0, 4));
 	return 0;
+}
+
+/* Judge path between i and j existed */
+int PathExisted(AGraph *G, int i, int j) {
+	int k;
+	for (k = 0; k < G->n; k ++)
+		visit[k] = 0;
+	DFS(G, i);
+	if (visit[j] == 1)
+		return 1;
+	else
+		return 0;
+}
+
+/* Judge a Graph is a Tree */
+int GisTree(AGraph *G) {
+	int i, vn, en;
+	vn = en = 0;
+	for (i = 0; i < G->n; i++) {
+		visit[i] = 0;
+	}
+	DFS2(G, 0, &vn, &en);
+	/* vn == G->n && G->n -1 == en/2*/
+	if (vn == G->n && en/2 == (G->n - 1))
+		return 1;
+	else
+		return 0;
+}
+
+void DFS2(AGraph *G, int v, int *vn, int *en) {
+	ArcNode *p;
+	visit[v] = 1;
+	*vn ++;	/* vn + 1 when visited */
+	p = G->adjlist[v].firstarc;
+	while (p) {
+		*en ++; /* en + 1 when there is arc , but this will double */
+		if (!visit[p->adjvex]) {
+			DFS2(G, p->adjvex, vn, en);
+		}
+		p = p->nextarc;
+	}
+}
+
+/* Return vex the farthest from vertex v of undirected connected graph */
+int remoteVex(AGraph *G, int v) {
+	int que[MAX_SIZE], front, rear;
+	ArcNode *p;
+	int i;
+	for (i = 0; i < G->n; i++)
+		visit[i] = 0;
+	front = rear = 0;
+	i = v;
+	visit[i] = 1;
+	rear = (rear + 1) % MAX_SIZE;
+	que[rear] = i;
+	while (front != rear) {
+		front = (front + 1) % MAX_SIZE;
+		i = que[front];
+		p = G->adjlist[i].firstarc;
+		while (p) {
+			if (!visit[p->adjvex]) {
+				visit[p->adjvex] = 1;
+				rear = (rear + 1) % MAX_SIZE;
+				que[rear] = p->adjvex;
+			}
+			p = p->nextarc;
+		}
+	}
+	return i;
 }
 
 void buildGraph(AGraph *G) {
