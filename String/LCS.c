@@ -8,6 +8,9 @@ int LCS_R(char *X, char *Y, int m, int n);
 /* A non-recursive version with dynamic programming O(mn)*/
 int LCS(char *X, char *Y, int m, int n);
 
+/* A more space-saving version of dp, space complexity O(n)*/
+int LCS1(char *X, char *Y, int m, int n);
+
 int main(){
 	char X[MAX];
 	char Y[MAX];
@@ -17,6 +20,7 @@ int main(){
 	int n = strlen(Y);
 	printf("LCS_R:%d\n", LCS_R(X, Y, m, n));
 	printf("LCS:%d\n", LCS(X, Y, m, n));
+	printf("LCS1:%d\n", LCS1(X, Y, m, n));
 	return 0;
 }
 
@@ -32,6 +36,7 @@ int LCS_R(char *X, char *Y, int m, int n) {
 	else
 		return max(LCS_R(X, Y, m, n-1), LCS_R(X, Y, m-1, n));
 }
+
 /* Memoization */
 int LCS(char *X, char *Y, int m, int n) {
 	int L[m+1][n+1];/* +1 for null X and null Y */
@@ -87,4 +92,27 @@ int LCS(char *X, char *Y, int m, int n) {
 	}
 	printf("LCS of %s and %s is %s\n", X, Y, lcs);
 	return L[m][n];
+}
+
+int LCS1(char *X, char *Y, int m, int n) {
+	int p[n+1], q[n+1];
+	int *pre, *cur;
+	cur = p; pre = q;
+	int i, j;
+	/* Init */
+	for (i = 0; i < n + 1; i ++)
+		pre[i] = cur[i] = 0;
+	/* Iterate compute */
+	for (i = 0; i < m; i ++) {
+		for (j = 0; j < n; j ++) {
+			if (X[i] == Y[j]) {
+				cur[j+1] = pre[j] + 1;	
+			}
+			else {
+				cur[j+1] = max(cur[j], pre[j+1]);
+			}
+		}
+		pre = cur;
+	}
+	return cur[n];
 }
