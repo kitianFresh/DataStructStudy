@@ -96,7 +96,7 @@ int LCS(char *X, char *Y, int m, int n) {
 
 int LCS1(char *X, char *Y, int m, int n) {
 	int p[n+1], q[n+1];
-	int *pre, *cur;
+	int *pre, *cur, *temp;
 	cur = p; pre = q;
 	int i, j;
 	/* Init */
@@ -112,7 +112,9 @@ int LCS1(char *X, char *Y, int m, int n) {
 				cur[j+1] = max(cur[j], pre[j+1]);
 			}
 		}
-		pre = cur;
+		temp = cur;
+		cur = pre;
+		pre = temp;
 	}
 	return cur[n];
 }
