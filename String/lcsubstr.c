@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX 32
+#define MAX 128
 /* A violent method Time complexity O(n^3), Space complexity O(1)*/
 int lcsubstr0(char *X, char *Y, int *start1, int *start2);
 
@@ -41,11 +41,10 @@ int lcsubstr0(char *X, char *Y, int *start1, int *start2) {
 		for (j = 0; j < n; j ++) {
 			k = 0;
 			while (i + k < m && j + k < n) {
+				comparison ++;
 				if (X[i+k] != Y[j+k]) break;
 				k ++;
-				comparison ++;
 			}
-			comparison ++;
 			if (k > length) {
 				length = k;
 				*start1 = i;
@@ -103,7 +102,6 @@ int lcsubstr2(char *X, char *Y, int *start1, int *start2) {
 			cur[j+1] = X[i] == Y[j] ? pre[j] + 1 : 0;
 			if (cur[j+1] > length) {
 				length = cur[j+1];
-				printf("%d\n", length);
 				*start1 = i - length + 1;
 				*start2 = j - length + 1;
 			}
