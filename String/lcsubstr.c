@@ -7,6 +7,11 @@ int lcsubstr0(char *X, char *Y, int *start1, int *start2);
 /* A dynamic programming time complexity O(n^2), Space complexity O(n^2)*/
 int lcsubstr1(char *X, char *Y, int *start1, int *start2);
 
+/* An improved version for dp, time complexity O(n^2), Space O(n) 
+ * Just like LCS problem, it only use two adjacent lines in the 
+ * process of filling */
+int lcsubstr2(char *X, char *Y, int *start1, int *start2);
+
 int main() {
 	char X[MAX];
 	char Y[MAX];
@@ -19,6 +24,10 @@ int main() {
 
 	length = lcsubstr1(X, Y, &start1, &start2);
 	printf("start1: %d start2: %d length: %d\n", start1, start2, length);
+
+	length = lcsubstr2(X, Y, &start1, &start2);
+	printf("start1: %d start2: %d length: %d\n", start1, start2, length);
+
 	return 0;
 }
 
@@ -71,6 +80,38 @@ int lcsubstr1(char *X, char *Y, int *start1, int *start2) {
 			}
 			comparison ++;
 		}
+	}
+	printf("X len: %d Y len: %d comparison: %d\n", m, n, comparison);
+	return length;
+}
+
+int lcsubstr2(char *X, char *Y, int *start1, int *start2) {
+	int m, n, i, j, length, comparison;
+	m = strlen(X);
+	n = strlen(Y);
+	length = comparison = 0;
+	int p[n+1], q[n+1], *pre, *cur, *temp;
+	/* Initialize */
+	for (i = 0; i < n + 1; i ++) {
+		p[i] = q[i] = 0;
+	}
+	pre = p; cur = q;
+
+	/* Computing the array by iterating */
+	for (i = 0; i < m; i ++) {
+		 for (j = 0; j < n; j ++) {
+			cur[j+1] = X[i] == Y[j] ? pre[j] + 1 : 0;
+			if (cur[j+1] > length) {
+				length = cur[j+1];
+				printf("%d\n", length);
+				*start1 = i - length + 1;
+				*start2 = j - length + 1;
+			}
+			comparison ++;
+		 }
+		 temp = cur;
+		 cur = pre;
+		 pre = temp;
 	}
 	printf("X len: %d Y len: %d comparison: %d\n", m, n, comparison);
 	return length;
