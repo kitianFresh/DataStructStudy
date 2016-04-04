@@ -143,17 +143,21 @@ int lcsubstr3(char *X, char *Y, int *start1, int *start2) {
 	int m, n, t, i, j, length, cur, pre, temp, comparison;
 	m = strlen(X);
 	n = strlen(Y);
-	length = cur = pre = comparison = 0;
+	length = comparison = 0;
 	/* lower triangular */
 	for (i = 0; i < m; i ++) {
+		/* compute a new diagonal line */
 		t = i;
 		j = 0;
+		cur = pre = 0; /*Note reset here for a new diagonal line */
 		while (t < m && j < n) {
 			cur = X[t] == Y[j] ? pre + 1 : 0;
 			if (cur > length) {
 				length = cur;
 				*start1 = t - length + 1;
 				*start2 = j - length + 1;
+				printf("lower//i: %d, t: %d, j: %d, start1: %d, start2: %d, length: %d\n", 
+						i, t, j, *start1, *start2, length);
 			}
 			/* Next */
 			t ++;
@@ -167,16 +171,19 @@ int lcsubstr3(char *X, char *Y, int *start1, int *start2) {
 	}
 
 	/* higher triangular */
-	cur = pre = 0;
 	for (j = 1; j < n; j ++) {
+		/* compute a new diagonal line */
 		t = j;
 		i = 0;
+		cur = pre = 0;
 		while (t < n && i < m) {
 			cur = X[i] == Y[t] ? pre + 1 : 0;
 			if (cur > length) {
 				length = cur;
 				*start1 = i - length + 1;
 				*start2 = t - length + 1;
+				printf("higher//i: %d, t: %d, j: %d, start1: %d, start2: %d,length: %d\n", 
+						i, t, j, *start1, *start2, length);
 			}
 			/* Next */
 			t ++;
