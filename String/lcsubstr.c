@@ -150,14 +150,16 @@ int lcsubstr3(char *X, char *Y, int *start1, int *start2) {
 		t = i;
 		j = 0;
 		cur = pre = 0; /*Note reset here for a new diagonal line */
+
+		if (m - t <= length || n - j <= length) /* reduce some comparison */
+			break;
+
 		while (t < m && j < n) {
 			cur = X[t] == Y[j] ? pre + 1 : 0;
 			if (cur > length) {
 				length = cur;
 				*start1 = t - length + 1;
 				*start2 = j - length + 1;
-				printf("lower//i: %d, t: %d, j: %d, start1: %d, start2: %d, length: %d\n", 
-						i, t, j, *start1, *start2, length);
 			}
 			/* Next */
 			t ++;
@@ -176,14 +178,16 @@ int lcsubstr3(char *X, char *Y, int *start1, int *start2) {
 		t = j;
 		i = 0;
 		cur = pre = 0;
+
+		if (m - i <= length || n - t <= length)
+			break;
+
 		while (t < n && i < m) {
 			cur = X[i] == Y[t] ? pre + 1 : 0;
 			if (cur > length) {
 				length = cur;
 				*start1 = i - length + 1;
 				*start2 = t - length + 1;
-				printf("higher//i: %d, t: %d, j: %d, start1: %d, start2: %d,length: %d\n", 
-						i, t, j, *start1, *start2, length);
 			}
 			/* Next */
 			t ++;
