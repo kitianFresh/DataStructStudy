@@ -12,6 +12,12 @@ int lcsubstr1(char *X, char *Y, int *start1, int *start2);
  * process of filling */
 int lcsubstr2(char *X, char *Y, int *start1, int *start2);
 
+/* A special version which differs from LCS, its space complexity
+ * is O(1). Left and top element is not needed in computing,
+ * because it is 0 if not equal, 1 if equal, which is different
+ * from LCS. */
+int lcsubstr3(char *X, char *Y, int *start1, int *start2);
+
 int main() {
 	char X[MAX];
 	char Y[MAX];
@@ -27,7 +33,9 @@ int main() {
 
 	length = lcsubstr2(X, Y, &start1, &start2);
 	printf("start1: %d start2: %d length: %d\n", start1, start2, length);
-
+	
+	length = lcsubstr3(X, Y, &start1, &start2);
+	printf("start1: %d start2: %d length: %d\n", start1, start2, length);
 	return 0;
 }
 
@@ -80,6 +88,22 @@ int lcsubstr1(char *X, char *Y, int *start1, int *start2) {
 			comparison ++;
 		}
 	}
+	/* Print the L table */
+	printf("  * ");
+	for (i = 0; i < n; i ++) {
+		printf("%c ", Y[i]);
+	}
+	printf("\n");
+	for (i = 0; i < m + 1; i ++) {
+		if (i == 0)
+			printf("* ");
+		else
+			printf("%c ", X[i-1]);
+		for (j = 0; j < n + 1; j ++)
+			printf("%d ", L[i][j]);
+		printf("\n");
+	}
+
 	printf("X len: %d Y len: %d comparison: %d\n", m, n, comparison);
 	return length;
 }
@@ -110,6 +134,59 @@ int lcsubstr2(char *X, char *Y, int *start1, int *start2) {
 		 temp = cur;
 		 cur = pre;
 		 pre = temp;
+	}
+	printf("X len: %d Y len: %d comparison: %d\n", m, n, comparison);
+	return length;
+}
+
+int lcsubstr3(char *X, char *Y, int *start1, int *start2) {
+	int m, n, t, i, j, length, cur, pre, temp, comparison;
+	m = strlen(X);
+	n = strlen(Y);
+	length = cur = pre = comparison = 0;
+	/* lower triangular */
+	for (i = 0; i < m; i ++) {
+		t = i;
+		j = 0;
+		while (t < m && j < n) {
+			cur = X[t] == Y[j] ? pre + 1 : 0;
+			if (cur > length) {
+				length = cur;
+				*start1 = t - length + 1;
+				*start2 = j - length + 1;
+			}
+			/* Next */
+			t ++;
+			j ++;
+			comparison ++;
+			/* Swap */
+			temp = cur;
+			cur = pre;
+			pre = temp;
+		}
+	}
+
+	/* higher triangular */
+	cur = pre = 0;
+	for (j = 1; j < n; j ++) {
+		t = j;
+		i = 0;
+		while (t < n && i < m) {
+			cur = X[i] == Y[t] ? pre + 1 : 0;
+			if (cur > length) {
+				length = cur;
+				*start1 = i - length + 1;
+				*start2 = t - length + 1;
+			}
+			/* Next */
+			t ++;
+			i ++;
+			comparison ++;
+			/* Swap */
+			temp = cur;
+			cur = pre;
+			pre = temp;
+		}
 	}
 	printf("X len: %d Y len: %d comparison: %d\n", m, n, comparison);
 	return length;
